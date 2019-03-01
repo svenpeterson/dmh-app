@@ -1,9 +1,9 @@
 {
-  "apiRoot": "https://api.veritone.com",
+  "apiRoot": "https://api.stage.veritone.com",
   "switchAppRoute": "https://www.veritone.com/switch-app",
   "loginRoute": "https://www.veritone.com/login/#",
   "graphQLEndpoint": "v3/graphql",
-  "OAuthClientID": "<your application ID here>",
+  "OAuthClientID": "1d9a9188-1504-4b9f-8c28-3fa9f257bb21",
   "pendoKey": null,
   "useOAuthGrant": true,
   "useHardcodedConfig": true

@@ -1,90 +1,98 @@
 import React, { Fragment } from 'react';
-import Grid from '@material-ui/core/Grid';
-import Link from 'redux-first-router-link';
+import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
-import {
-  ROUTE_EXAMPLE_TABS,
-  ROUTE_EXAMPLE_TAKEOVER
-} from 'state/modules/routing';
 import AppContainer from 'components/AppContainer';
 import AppBar from 'components/AppBar';
-import TopBar from 'components/TopBar';
-import SideBar from 'components/SideBar';
 import ContentContainer from 'components/ContentContainer';
-import ExampleFormDialog from 'components/ExampleFormDialog';
+import { CircularProgress } from '@material-ui/core';
 
 export default class Home extends React.Component {
-  static propTypes = {};
+  constructor(props) {
+    super(props);
+    this.getSites = this.getSites.bind(this);
+    this.getSitesOnEnter = this.getSitesOnEnter.bind(this);
+    this.showUrl = this.showUrl.bind(this);
+    this.setToken = this.setToken.bind(this);
+  }
 
-  state = {
-    exampleFormModalOpen: false
-  };
+  state = {};
 
-  showExampleFormModal = () => {
-    this.setState({ exampleFormModalOpen: true });
-  };
+  showUrl(site) {
+    const url = `https://${site.value}/user/tokenlogin?token=${
+      this.state.token
+    }`;
+    return (
+      <p key={site.key}>
+        <a key={site.key} href={url}>
+          {site.key}
+        </a>
+      </p>
+    );
+  }
 
-  closeExampleFormModal = () => {
-    this.setState({ exampleFormModalOpen: false });
-  };
+  getSites() {
+    this.setState({ loading: true });
+    const request = async () => {
+      const response = await fetch(
+        `https://crxextapi.qa.wzplatform.com/identities-api/v1/user/siteNames/byAiwareToken?api_key=${
+          this.state.token
+        }`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
+          }
+        }
+      );
+      return await response.json();
+    };
 
-  handleSubmitExampleForm = values => {
-    alert(JSON.stringify(values, null, '\t'));
-    this.setState({ exampleFormModalOpen: false });
-  };
+    request().then(
+      res => this.setState({ sites: res.list, loading: false, failed: false }),
+      _ => this.setState({ sites: [], loading: false, failed: true })
+    );
+  }
+
+  setToken(e) {
+    this.setState({ token: e.target.value });
+  }
+
+  getSitesOnEnter(e) {
+    if (e.key === 'Enter' && !!this.state.token) {
+      this.getSites();
+    }
+  }
 
   render() {
     return (
       <Fragment>
-        <SideBar />
         <AppBar />
-        <TopBar
-          // eslint-disable-next-line
-          renderActionButton={() => (
-            <Button color="primary" variant="raised">
-              test
-            </Button>
-          )}
-        />
-        <AppContainer appBarOffset topBarOffset sideBarOffset>
+        <AppContainer appBarOffset>
           <ContentContainer>
-            <Grid container>
-              <Grid item xs={6}>
-                <ul>
-                  <li>
-                    <Link to={{ type: ROUTE_EXAMPLE_TABS }}>
-                      Tabbed example
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to={{ type: ROUTE_EXAMPLE_TAKEOVER }}>
-                      Fullscreen modal example
-                    </Link>
-                  </li>
-                  <li>
-                    <Button
-                      variant="outlined"
-                      onClick={this.showExampleFormModal}
-                    >
-                      Form input modal
-                    </Button>
-                  </li>
-                </ul>
-              </Grid>
-              <Grid item xs={6}>
-                {'home content test1234'.repeat(200)}
-              </Grid>
-              {this.state.exampleFormModalOpen && (
-                // Note that this isn't open=this.state.exampleFormModalOpen
-                // because we want to unmount the form to reset values when it closes.
-                <ExampleFormDialog
-                  open
-                  onClose={this.closeExampleFormModal}
-                  onSubmit={this.handleSubmitExampleForm}
-                />
-              )}
-            </Grid>
+            <TextField
+              style={{ marginTop: '12px', width: '340px' }}
+              label="aiWARE Session ID"
+              onChange={this.setToken}
+              onKeyPress={this.getSitesOnEnter}
+            />
+            <Button
+              style={{ marginLeft: '12px' }}
+              color="primary"
+              variant="raised"
+              onClick={this.getSites}
+              disabled={!this.state.token || this.state.loading}
+            >
+              Get My Sites
+            </Button>
+            <br />
+            {this.state.loading && <CircularProgress />}
+            {!this.state.loading &&
+              this.state.sites &&
+              this.state.sites.map(site => this.showUrl(site))}
+            {!this.state.loading &&
+              this.state.failed && <p>Could not retrieve sites</p>}
           </ContentContainer>
         </AppContainer>
       </Fragment>
