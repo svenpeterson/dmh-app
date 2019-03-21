@@ -18,10 +18,12 @@ export default class Home extends React.Component {
 
   state = {};
 
+  getUrl(site) {
+    return `https://${site.value}/user/tokenlogin?token=${this.state.token}`;
+  }
+
   showUrl(site) {
-    const url = `https://${site.value}/user/tokenlogin?token=${
-      this.state.token
-    }`;
+    const url = this.getUrl(site);
     return (
       <p key={site.key}>
         <a key={site.key} href={url}>
@@ -66,6 +68,10 @@ export default class Home extends React.Component {
   }
 
   render() {
+    if ((this.state.sites || []).length === 1) {
+      window.location.replace(this.getUrl(this.state.sites[0]));
+    }
+
     return (
       <Fragment>
         <AppBar />
@@ -90,6 +96,7 @@ export default class Home extends React.Component {
             {this.state.loading && <CircularProgress />}
             {!this.state.loading &&
               this.state.sites &&
+              this.state.sites.length > 1 &&
               this.state.sites.map(site => this.showUrl(site))}
             {!this.state.loading &&
               this.state.failed && <p>Could not retrieve sites</p>}
