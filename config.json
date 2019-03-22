@@ -3,7 +3,7 @@
   "switchAppRoute": "https://www.veritone.com/switch-app",
   "loginRoute": "https://www.veritone.com/login/#",
   "graphQLEndpoint": "v3/graphql",
-  "OAuthClientID": "1d9a9188-1504-4b9f-8c28-3fa9f257bb21",
+  "OAuthClientID": "9a436abe-6d11-49ad-849b-3584f1cbee2c",
   "pendoKey": null,
   "useOAuthGrant": true,
   "useHardcodedConfig": true

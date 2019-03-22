@@ -1,11 +1,11 @@
 {
-  "name": "veritone-app-boilerplate-react",
+  "name": "veritone-dmh-app",
   "version": "1.0.0",
   "main": "index.js",
-  "author": "Mitch Robb <mrobb@veritone.com>",
+  "author": "",
   "private": false,
   "now": {
-    "alias": "veritone-app-boilerplate-react"
+    "alias": "veritone-dmh-app.now.sh"
   },
   "scripts": {
     "start": "neutrino start",
