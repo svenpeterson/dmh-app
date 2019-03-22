@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "neutrino start",
-    "build": "neutrino build",
+    "build": "neutrino build --options.output build-${ENVIRONMENT:-local} --options.env.environment ${ENVIRONMENT:-local}",
     "test": "neutrino test",
     "deploy": "now && now alias",
     "test:watch": "neutrino test --watch",
